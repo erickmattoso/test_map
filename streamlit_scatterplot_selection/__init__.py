@@ -1,9 +1,10 @@
 import streamlit as st
 from bokeh.models import ColumnDataSource, CustomJS
 from bokeh.plotting import figure
+
+from streamlit_bokeh_events import streamlit_bokeh_events
 import pandas as pd
 import numpy as np
-from streamlit_bokeh_events import streamlit_bokeh_events
 
 
 @st.cache
