@@ -1,9 +1,21 @@
+import datetime
 from streamlit_bokeh_events import streamlit_bokeh_events
 from bokeh.models import CustomJS
 from bokeh.models.widgets import Button
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
+
+st.set_page_config(layout="wide")
+hide_streamlit_style = """
+<style>
+# MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+.css-18e3th9 {padding: 1rem 5rem 10rem;}
+</style>
+"""
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+date_1 = datetime.datetime.strptime("22/01/2022", "%d/%m/%Y")
 
 loc_button = Button(label="Get Location")
 loc_button.js_on_event("button_click", CustomJS(code="""
@@ -90,5 +102,6 @@ for n in range(dias):
     j = i+5
     dias_percorridos = pd.concat([home, csv_csv.iloc[i:j], home])
     fig = plot_figure(dias_percorridos)
-    st.write(f"Visitar no dia {n+1}")
+    end_date = (date_1 + datetime.timedelta(days=n)).strftime("%d/%m/%Y")
+    st.write(f"Visitar no dia {n+1} - {end_date}")
     st.plotly_chart(fig, use_container_width=True)
