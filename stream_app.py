@@ -1,30 +1,9 @@
-
 from streamlit_bokeh_events import streamlit_bokeh_events
 from bokeh.models import CustomJS
 from bokeh.models.widgets import Button
-from streamlit import caching
-import os
-from pathlib import Path
-import matplotlib.pyplot as plt
-from datetime import date
 import streamlit as st
-import csv
-import math
-import argparse
-import numpy as np
-from ortools.constraint_solver import routing_enums_pb2
-from ortools.constraint_solver import pywrapcp
-import osmnx as ox
-import networkx as nx
-import folium
 import pandas as pd
 import plotly.graph_objects as go
-import geopandas as gpd
-import geocoder
-import plotly.offline as offline
-from plotly.graph_objs import *
-offline.init_notebook_mode()
-
 
 loc_button = Button(label="Get Location")
 loc_button.js_on_event("button_click", CustomJS(code="""
