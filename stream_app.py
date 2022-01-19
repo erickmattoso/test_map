@@ -21,8 +21,8 @@ result = streamlit_bokeh_events(
     override_height=40,
     debounce_time=0)
 
-csv_csv = pd.read_csv('../streamlit/csv_csv.csv')
-df = pd.read_csv('../streamlit/df.csv')
+csv_csv = pd.read_csv('csv_csv.csv')
+df = pd.read_csv('df.csv')
 dias = 9
 lugares_dia = 5
 n_places = dias * lugares_dia
