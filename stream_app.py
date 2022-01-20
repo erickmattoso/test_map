@@ -88,14 +88,35 @@ values = st.slider('Select a range of values',
 
 fig = plot_figure(csv_csv, values)
 
-st.plotly_chart(fig, use_container_width=True)
+row1, row2 = st.columns([1, 1])
 
-i = j = 0
+row1.plotly_chart(fig, use_container_width=True)
+
 csv_csv_copy = csv_csv.copy()
 csv_csv_copy = csv_csv_copy[csv_csv_copy['title'] != 'Home']
 csv_csv_copy = csv_csv_copy[csv_csv_copy['title'] != 'Disney']
 csv_csv_copy = csv_csv_copy[csv_csv_copy['title'] != 'Palace of Versailles']
 # csv_csv_copy = csv_csv_copy.reset_index(drop=True)
+
+i = j = 0
+fig = plot_figure(csv_csv.head(1), values)
+for n in range(7):
+    i = j
+    j = i+5
+    fig.add_trace(go.Scattermapbox(
+        mode="markers+lines",
+        hovertext=list(csv_csv_copy.iloc[i:j].title),
+        hoverinfo='text',
+        lon=csv_csv_copy.iloc[i:j].lng,
+        lat=csv_csv_copy.iloc[i:j].lat,
+        marker={
+            'size': 12,
+            'opacity': 0.8
+        }))
+row2.plotly_chart(fig, use_container_width=True)
+
+
+i = j = 0
 
 for n in range(7):
     i = j
