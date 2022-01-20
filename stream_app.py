@@ -6,15 +6,6 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
-st.set_page_config(layout="wide")
-hide_streamlit_style = """
-<style>
-# MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-.css-18e3th9 {padding: 1rem 5rem 10rem;}
-</style>
-"""
-st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 date_1 = datetime.datetime.strptime("22/01/2022", "%d/%m/%Y")
 
 loc_button = Button(label="Get Location")
@@ -38,13 +29,13 @@ df = pd.read_csv('df.csv')
 dias = 9
 lugares_dia = 5
 n_places = dias * lugares_dia
+other = n_places*lugares_dia
 MYHOME = [["Home", 48.8841155, 2.3465937]]
 home = pd.DataFrame(MYHOME)
 home.columns = ["title", "lat", "lng"]
 
 
-def plot_figure(my_df):
-    other = n_places*lugares_dia
+def plot_figure(my_df, ranges):
     fig = go.Figure(go.Scattermapbox(
         mode="markers",
         hovertext=["Hotel Angleterre Montmartre"],
@@ -55,10 +46,10 @@ def plot_figure(my_df):
 
     fig.add_trace(go.Scattermapbox(
         mode="markers",
-        hovertext=list(df.iloc[n_places:other].title),
+        hovertext=list(df.iloc[ranges[0]:ranges[1]].title),
         hoverinfo='text',
-        lon=df.iloc[n_places:other].lng,
-        lat=df.iloc[n_places:other].lat,
+        lon=df.iloc[ranges[0]:ranges[1]].lng,
+        lat=df.iloc[ranges[0]:ranges[1]].lat,
         marker={"size": 5}))
 
     fig.add_trace(go.Scattermapbox(
@@ -92,16 +83,31 @@ def plot_figure(my_df):
     return fig
 
 
-fig = plot_figure(csv_csv)
+values = st.slider('Select a range of values',
+                   n_places, len(df), (n_places, other))
+
+fig = plot_figure(csv_csv, values)
 
 st.plotly_chart(fig, use_container_width=True)
 
 i = j = 0
-for n in range(dias):
+csv_csv_copy = csv_csv.copy()
+csv_csv_copy = csv_csv_copy[csv_csv_copy['title'] != 'Home']
+csv_csv_copy = csv_csv_copy[csv_csv_copy['title'] != 'Disney']
+csv_csv_copy = csv_csv_copy[csv_csv_copy['title'] != 'Palace of Versailles']
+# csv_csv_copy = csv_csv_copy.reset_index(drop=True)
+
+for n in range(7):
     i = j
     j = i+5
-    dias_percorridos = pd.concat([home, csv_csv.iloc[i:j], home])
-    fig = plot_figure(dias_percorridos)
+    dias_percorridos = pd.concat([
+        home,
+        csv_csv_copy.iloc[i:j],
+        home
+    ])  # .reset_index(drop=True)
+    fig = plot_figure(dias_percorridos, values)
     end_date = (date_1 + datetime.timedelta(days=n)).strftime("%d/%m/%Y")
     st.write(f"Visitar no dia {n+1} - {end_date}")
+    st.write(dias_percorridos[['title', 'duration', 'price']])
+    st.write(dias_percorridos.index)
     st.plotly_chart(fig, use_container_width=True)
