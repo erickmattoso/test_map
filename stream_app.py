@@ -6,6 +6,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
+st.title('Trip to Paris')
 date_1 = datetime.datetime.strptime("22/01/2022", "%d/%m/%Y")
 
 loc_button = Button(label="Get Location")
@@ -85,50 +86,15 @@ values = st.slider('Select a range of values', 0, len(df), (0, len(csv_csv)))
 
 fig = plot_figure(csv_csv, values)
 
-row1, row2 = st.columns([1, 1])
-
-row1.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, use_container_width=True)
 
 csv_csv_copy = csv_csv.copy()
 csv_csv_copy = csv_csv_copy[csv_csv_copy['title'] != 'Home']
 csv_csv_copy = csv_csv_copy[csv_csv_copy['title'] != 'Disney']
 csv_csv_copy = csv_csv_copy[csv_csv_copy['title'] != 'Palace of Versailles']
 csv_csv_copy = csv_csv_copy.reset_index(drop=True)
-
-i = j = 0
-fig = plot_figure(csv_csv.head(1), values)
-for n in range(7):
-    i = j
-    j = i+5
-    fig.add_trace(go.Scattermapbox(
-        mode="markers+lines",
-        hovertext=list(csv_csv_copy.iloc[i:j].title),
-        hoverinfo='text',
-        lon=csv_csv_copy.iloc[i:j].lng,
-        lat=csv_csv_copy.iloc[i:j].lat,
-        marker={
-            'size': 12,
-            'opacity': 0.8
-        }))
-row2.plotly_chart(fig, use_container_width=True)
-
-# i = j = 0
-# for n in range(7):
-#     i = j
-#     j = i+5
-#     dias_percorridos = pd.concat([
-#         home,
-#         csv_csv_copy.iloc[i:j],
-#         home
-#     ])
-#     fig = plot_figure(dias_percorridos, values)
-#     end_date = (date_1 + datetime.timedelta(days=n)).strftime("%d/%m/%Y")
-#     st.write(f"Visitar no dia {n+1} - {end_date}")
-#     st.write(dias_percorridos[['title', 'price']])
-#     st.markdown(list(dias_percorridos.title))
-#     st.plotly_chart(fig, use_container_width=True)
-#     st.markdown(list(dias_percorridos.index))
-
+listinha = list(csv_csv_copy['title'])
+st.write(df[df['title'].isin(listinha)][['title']])
 
 dias_percorridos = pd.concat([csv_csv_copy, home]).reset_index(drop=True)
 
